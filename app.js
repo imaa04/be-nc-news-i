@@ -12,10 +12,9 @@ app.get("/api/topics", getAllTopics);
 
 app.get('/api', getDocs)
 
-app.use(( req, res, next)=> {
 
-     
-    res.status(404).send({ msg: 'Path not found' })
+app.all('/*', ( req, res, next)=> {  
+res.status(404).send({ msg: 'Path not found' })
 })
 
 
