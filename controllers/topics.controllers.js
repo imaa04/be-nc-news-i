@@ -11,4 +11,4 @@ exports.getAllTopics = (req, res, next) => {
 
 exports.getDocs = (req,res) => {
     res.status(200).send({endpoints})
-} 
+}
