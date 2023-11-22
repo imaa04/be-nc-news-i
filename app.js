@@ -8,6 +8,7 @@ const {
 const {
   getAllArticles,
   getArticlesById,
+  getCommentByArticleId,
 } = require("./controllers/articles.controllers");
 
 const app = express();
@@ -19,6 +20,8 @@ app.get("/api", getDocs);
 app.get("/api/articles", getAllArticles);
 
 app.get("/api/articles/:article_id", getArticlesById);
+
+app.get("/api/articles/:article_id/comments", getCommentByArticleId);
 
 app.use((err, req, res, next) => {
   if (err.code === "22P02") {

@@ -111,3 +111,25 @@ describe("/api/articles", () => {
   })
   
 });
+describe("/api/articles/:article_id/comments", () => {
+  test("get all comments for a specified article", () => {
+    return request(app)
+    .get("/api/articles/1/comments")
+    .expect(200)
+    .then(({body}) => {
+      const {comments} = body;
+      expect(comments).toHaveLength(11);
+      comments.forEach((comment) => {
+        expect(comment.article_id).toBe(1);
+      })
+      });
+  });
+})
+test("GET:404 sends an appropriate status and error message when article doesn't have a comment", () => {
+        return request(app)
+          .get("/api/articles/99/comments")
+          .expect(404)
+          .then((response) => {
+            expect(response.body.msg).toBe("this article doesn't have a comment");
+          });
+})
