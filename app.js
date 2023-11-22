@@ -3,9 +3,12 @@ const express = require("express");
 const {
   getAllTopics,
   getDocs,
+} = require("./controllers/topics.controllers");
+
+const {
   getAllArticles,
   getArticlesById,
-} = require("./controllers/topics.controllers");
+} = require("./controllers/articles.controllers");
 
 const app = express();
 

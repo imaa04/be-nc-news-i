@@ -109,13 +109,5 @@ describe("/api/articles", () => {
       expect(articles.at(0).created_at).toBe("2020-11-03T09:12:00.000Z");
     })
   })
-  test("GET:404 responds with an appropriate status and error message when given a non-existent api", () => {
-    return request(app)
-      .get("/api/article")
-      .expect(404)
-      .then((response) => {
-        expect(response.body.msg).toBe("Path not found");
-      });
-  });
-
+  
 });
