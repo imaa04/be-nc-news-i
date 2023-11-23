@@ -153,7 +153,7 @@ describe("/api/articles/:article_id/comments", () => {
       .get("/api/articles/7/comments")
       .expect(200)
       .then((response) => {
-        expect(response.body.msg).toBe('this article has no comments');
+        expect(response.body.comments).toStrictEqual([]);
       });
   });
 })
