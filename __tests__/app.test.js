@@ -65,7 +65,7 @@ describe("/api/articles/:article_id", () => {
       .get("/api/articles/99")
       .expect(404)
       .then((response) => {
-        expect(response.body.msg).toBe("article does not exist");
+        expect(response.body.msg).toBe("article_id does not exist");
       });
   });
   test("GET:400 sends an appropriate status and error message when given an invalid id", () => {
@@ -78,7 +78,7 @@ describe("/api/articles/:article_id", () => {
   });
 });
 describe("/api/articles", () => {
-  test("GET: 200 sends the articles and they should be sorted by date in descending order with no body propert present", () => {
+  test("GET: 200 sends the articles and they should be sorted by date in descending order with no body property present", () => {
     return request(app)
     .get('/api/articles')
     .expect(200)
@@ -111,3 +111,49 @@ describe("/api/articles", () => {
   })
   
 });
+describe("/api/articles/:article_id/comments", () => {
+  test("get all comments for a specified article", () => {
+    return request(app)
+    .get("/api/articles/1/comments")
+    .expect(200)
+    .then(({body}) => {
+      const {comments} = body;
+      expect(comments).toHaveLength(11);
+      comments.forEach(comment => {
+      expect(comment).toMatchObject({
+        comment_id: expect.any(Number),
+        body: expect.any(String),
+        article_id: expect.any(Number),
+        author: expect.any(String),
+        votes: expect.any(Number),
+        created_at: expect.any(String)
+      })  
+      })
+      });
+  });
+
+  test("GET:404 sends an appropriate status and error message when article id given is valid but non-existen id", () => {
+        return request(app)
+        .get("/api/articles/99/comments")
+        .expect(404)
+        .then((response) => {
+        expect(response.body.msg).toBe("this article_id doesn't exist");
+      });
+})
+  test("GET:400 sends an appropriate status and error message when given an invalid id", () => {
+    return request(app)
+    .get("/api/articles/banana/comments")
+    .expect(400)
+    .then((response) => {
+      expect(response.body.msg).toBe("Bad request");
+    });
+})
+  test("GET:200 responds with a message when given valid ID but the article has no comments", () => {
+    return request(app)
+      .get("/api/articles/7/comments")
+      .expect(200)
+      .then((response) => {
+        expect(response.body.comments).toStrictEqual([]);
+      });
+  });
+})
