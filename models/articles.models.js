@@ -6,7 +6,7 @@ exports.selectArticleById = (article_id) => {
     .then((result) => {
       const user = result.rows[0];
       if (!user) {
-        return Promise.reject({ status: 404, msg: "article does not exist" });
+        return Promise.reject({ status: 404, msg: "article_id does not exist" });
       }
       return result.rows[0];
     });
@@ -32,22 +32,33 @@ exports.selectArticles = () => {
   });
 };
 
-exports.selectCommentByArticleId = (article_id) => {
+exports.checkArticleExists = (article_id) => {
   return db
-    .query(
-      `SELECT * FROM comments WHERE article_id = $1
-        ORDER BY created_at DESC;`,
-      [article_id]
-    )
+    .query(`SELECT * FROM articles WHERE article_id = $1;`, [article_id])
     .then((result) => {
-      const user = result.rows[0];
-      if (!user) {
+      if (result.rows.length === 0) {
         return Promise.reject({
           status: 404,
-          msg: "this article doesn't have a comment",
+          msg: "this article_id doesn't exist",
         });
       }
 
       return result.rows;
     });
 };
+
+exports.selectCommentByArticleId = (article_id) => {
+    return db
+      .query(
+        `SELECT * FROM comments WHERE article_id = $1
+        ORDER BY created_at DESC;`,
+        [article_id]
+      )
+
+      .then(( result ) => {
+        if(result.rows.length === 0) {
+          return Promise.reject({status: 200, msg: 'this article has no comments'})
+        }
+        return result.rows
+      });
+}

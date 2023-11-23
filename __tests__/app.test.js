@@ -65,7 +65,7 @@ describe("/api/articles/:article_id", () => {
       .get("/api/articles/99")
       .expect(404)
       .then((response) => {
-        expect(response.body.msg).toBe("article does not exist");
+        expect(response.body.msg).toBe("article_id does not exist");
       });
   });
   test("GET:400 sends an appropriate status and error message when given an invalid id", () => {
@@ -84,7 +84,6 @@ describe("/api/articles", () => {
     .expect(200)
     .then((response)=> {
       const articles = response.body.articles
-      console.log(articles)
       expect(articles).toHaveLength(13)
       articles.forEach(article => {
         expect(article).toMatchObject({
@@ -138,7 +137,7 @@ describe("/api/articles/:article_id/comments", () => {
         .get("/api/articles/99/comments")
         .expect(404)
         .then((response) => {
-        expect(response.body.msg).toBe("this article doesn't have a comment");
+        expect(response.body.msg).toBe("this article_id doesn't exist");
       });
 })
   test("GET:400 sends an appropriate status and error message when given an invalid id", () => {
@@ -149,12 +148,12 @@ describe("/api/articles/:article_id/comments", () => {
       expect(response.body.msg).toBe("Bad request");
     });
 })
-  test("GET:404 sends an appropriate status and error message when given valid ID but the article has no comments", () => {
+  test("GET:200 responds with a message when given valid ID but the article has no comments", () => {
     return request(app)
       .get("/api/articles/7/comments")
-      .expect(404)
+      .expect(200)
       .then((response) => {
-        expect(response.body.msg).toBe("this article doesn't have a comment");
+        expect(response.body.msg).toBe('this article has no comments');
       });
   });
 })
