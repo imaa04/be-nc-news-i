@@ -33,24 +33,21 @@ exports.selectArticles = () => {
 };
 
 exports.selectCommentByArticleId = (article_id) => {
-    
-   return db
-     .query(
-       `SELECT * FROM comments WHERE article_id = $1
+  return db
+    .query(
+      `SELECT * FROM comments WHERE article_id = $1
         ORDER BY created_at DESC;`,
-       [article_id]
-     )
-     .then((result) => {
-         const user = result.rows[0];
-         if (!user) {
-           return Promise.reject({
-             status: 404,
-             msg: "this article doesn't have a comment",
-           });
-         }
+      [article_id]
+    )
+    .then((result) => {
+      const user = result.rows[0];
+      if (!user) {
+        return Promise.reject({
+          status: 404,
+          msg: "this article doesn't have a comment",
+        });
+      }
 
-       return result.rows;
-     });
-
-    
-}
+      return result.rows;
+    });
+};
