@@ -1,4 +1,5 @@
 const db = require("../db/connection");
+const format = require("pg-format");
 
 exports.selectArticleById = (article_id) => {
   return db
@@ -6,7 +7,10 @@ exports.selectArticleById = (article_id) => {
     .then((result) => {
       const user = result.rows[0];
       if (!user) {
-        return Promise.reject({ status: 404, msg: "article_id does not exist" });
+        return Promise.reject({
+          status: 404,
+          msg: "article_id does not exist",
+        });
       }
       return result.rows[0];
     });
@@ -48,14 +52,30 @@ exports.checkArticleExists = (article_id) => {
 };
 
 exports.selectCommentByArticleId = (article_id) => {
-    return db
-      .query(
-        `SELECT * FROM comments WHERE article_id = $1
+  return db
+    .query(
+      `SELECT * FROM comments WHERE article_id = $1
         ORDER BY created_at DESC;`,
-        [article_id]
-      )
+      [article_id]
+    )
 
-      .then(( result ) => {
-        return result.rows
-      });
-}
+    .then((result) => {
+      return result.rows;
+    });
+};
+
+exports.createNewComment = (article_id, newComment) => {
+  const { username, body } = newComment;
+  const insertCommentsQueryStr = format(
+    `INSERT INTO comments (body, article_id, author) VALUES (%L, %L, %L) RETURNING *;`,
+    body,
+    article_id,
+    username
+  );
+  return db
+    .query(insertCommentsQueryStr)
+
+    .then((result) => {
+      return result.rows[0];
+    });
+};

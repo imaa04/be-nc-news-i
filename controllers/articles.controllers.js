@@ -3,6 +3,7 @@ const {
   selectArticles,
   selectCommentByArticleId,
   checkArticleExists,
+  createNewComment,
 } = require("../models/articles.models");
 
 exports.getArticlesById = (req, res, next) => {
@@ -41,3 +42,22 @@ exports.getCommentByArticleId = (req, res, next) => {
     })
     .catch(next);
 };
+
+exports.postNewComment = (req, res, next) => {
+    const {article_id} =req.params
+    const newComment = req.body
+    const commentPromises = [checkArticleExists(article_id)];
+    if (article_id, newComment) {
+      commentPromises.push(createNewComment(article_id, newComment));
+    }
+
+  Promise.all(commentPromises)
+    .then((resolvedPromises) => {
+      const comment = resolvedPromises[1];
+
+      res.status(201).send({ comment });
+    })
+    .catch(next);
+
+   
+}
