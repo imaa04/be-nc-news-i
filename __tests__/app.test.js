@@ -207,4 +207,52 @@ describe("POST /api/articles/:article_id/comments",() =>{
         expect(response.body.msg).toBe("Bad request");
       });
   });
+  test("POST:400 responds with an error message when missing required fields e.g. body property or username", () => {
+    const newComment = {
+      username: "butter_bridge",
+    };
+    return request(app)
+      .post("/api/articles/1/comments")
+      .send(newComment)
+      .expect(400)
+      .then((response) => {
+        expect(response.body.msg).toBe("Bad request: Missing required fileds");
+      });
+  });
+  test("POST:404 sends an appropriate status and error message when username given doesn't exist", () => {
+    const newComment = {
+      username: "johnny_bravo04",
+      body: "This article is lit!",
+    };
+    return request(app)
+      .post("/api/articles/1/comments")
+      .send(newComment)
+      .expect(404)
+      .then((response) => {
+        expect(response.body.msg).toBe("Not Found: username does not exist");
+      });
+  });
+  test("201: ignores unnecessary fields", () => {
+    const newComment = {
+      username: "butter_bridge",
+      body: "This article is lit!",
+      votes: 12,
+    };
+    return request(app)
+      .post("/api/articles/1/comments")
+      .send(newComment)
+      .expect(201)
+      .then((response) => {
+        expect(response.body.comment.author).toBe("butter_bridge");
+        expect(response.body.comment.body).toBe("This article is lit!");
+        expect(response.body.comment).toMatchObject({
+          comment_id: expect.any(Number),
+          body: expect.any(String),
+          article_id: expect.any(Number),
+          author: expect.any(String),
+          votes: expect.any(Number),
+          created_at: expect.any(String),
+        });
+      });
+  });
 });
