@@ -90,6 +90,11 @@
         }
       ]
     }
+  },
+  "DELETE /api/comments/:comment_id": {
+    "description": "deletes specified comment_id",
+    "queries": ["comment_id"],
+    "exampleResponse": {}
   }
 }
 
