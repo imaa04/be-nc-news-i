@@ -354,5 +354,33 @@ describe("PATCH /api/articles/:article_id", () => {
           article_img_url: expect.any(String),
         });
       });
+  })
+})
+describe("DELETE /api/comments/:comment_id", () => {
+  test('204: responds with no content for the specified comment', () => {
+    return request(app)
+    .delete("/api/comments/4")
+    .expect(204)
+    .then((response) => {
+      expect(response.body).toEqual({})
+      expect(Object.keys(response.body).length).toBe(0)
+    })
+  })
+    test("DELETE:404 sends an appropriate status and error message when given a valid but non-existent id", () => {
+      return request(app)
+        .delete("/api/comments/99")
+        .expect(404)
+        .then((response) => {
+          expect(response.body.msg).toBe("this comment_id does not exist");
+        });
+    });
+    test("DELETE:400 sends an appropriate status and error message when given an invalid id", () => {
+      return request(app)
+        .delete("/api/comments/not-a-comment")
+        .expect(400)
+        .then((response) => {
+          expect(response.body.msg).toBe("Bad request");
+        });
+    });
   });
-});
+
