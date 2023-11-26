@@ -79,3 +79,21 @@ exports.createNewComment = (article_id, newComment) => {
       return result.rows[0];
     });
 };
+
+exports.updateArticle = (article_id, newVoteChange) => {
+  const { inc_votes } = newVoteChange;
+
+  const updateVotes = `
+      UPDATE articles SET votes = votes + $1 WHERE article_id = $2 RETURNING *;`;
+
+  return db.query(updateVotes, [inc_votes, article_id]).then((result) => {
+    const user = result.rows[0];
+    if (!user) {
+      return Promise.reject({
+        status: 404,
+        msg: "article_id does not exist",
+      });
+    }
+    return result.rows[0];
+  });
+};
